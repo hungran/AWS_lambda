@@ -15,9 +15,9 @@
         "Action": [
           "ec2:StopInstances",
           "ec2:StartInstances",
-          "ec2:DescribeTags"
+          "ec2:Des"
         ],
-        "Resource":"arn:aws:lambda:*:*:*"
+        "Resource":"*"
         }
     ]
 }
