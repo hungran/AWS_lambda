@@ -1,5 +1,5 @@
 # AWS_lambda
-## IAM_POLICY for `lambda`
+## IAM_POLICY for `lambda's role`
 ```
 {
     "Version": "2012-10-17",
