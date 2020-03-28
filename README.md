@@ -4,28 +4,27 @@
 {
     "Version": "2012-10-17",
     "Statement": [
-    {
+      {
         "Effect": "Allow",
         "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
         ],
         "Resource": "arn:aws:logs:*:*:*"
-    },
-    {
+      },
+      {
         "Effect": "Allow",
         "Action": [
-        "ec2:StopInstances",
-        "ec2:StartInstances",
-        "ec2:DescribeTags"
+          "ec2:StopInstances",
+          "ec2:StartInstances",
+          "ec2:De*"
         ],
-        "Resource":"arn:aws:lambda:*:*:*"
+        "Resource":"*"
         }
     ]
-}
+} 
 ```
-
 ## lambda_function.py
 ```
 import boto3
@@ -35,24 +34,28 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 region = 'ap-southeast-1'
 
-
 def lambda_handler(event, context):
-ec2 = boto3.resource('ec2', region_name=region)
-#    client = boto3.client('ec2', region_name=region)
-#    instance = ec2.istances('id')
-instances = ec2.instances.filter(
-Filters=[
-{
-    'Name': 'tag:Scheduled',
-    'Values': ['True']
-}
-]
-)
-for instance in instances.all():
-instance_state = instance.state['Name']
-if instance_state == 'stopped':
-    instance.start()
-else:
-    print (instance.id , instance.state)
-    print ('starting instances:' + str(instance.id))
+    ec2 = boto3.resource('ec2', region_name=region)
+    #Filter EC2 with tag
+    instances = ec2.instances.filter(
+    Filters=[
+        {
+            'Name': 'tag:Scheduled',
+            'Values': ['True']
+        }
+    ]
+    )
+    #Get all instances
+    for instance in instances.all():
+        #Definde instance_state
+        instance_state = instance.state['Name']
+        #Start or stop instance if instance running or stopped then print
+        if instance_state == 'stopped':
+            instance.start()
+            print('staring instance id: ' + str(instance.id))
+        elif instance_state == 'running':
+            instance.stop()
+            print('stopping instance id: ' + str(instance.id))
+#        else:
+#            print ('no action need')
 ```
